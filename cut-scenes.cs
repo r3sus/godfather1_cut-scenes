@@ -3,41 +3,6 @@ using System.IO;
 
 class Test
 {
-	
-	public static void FileOp0(string file)
-	{
-		int i = 0;
-		using (var stream = File.Open(file, FileMode.Open, FileAccess.ReadWrite)) {
-			for (int j = 0; j<stream.Length/4;j++)
-			{
-			var chunk = new byte[4];
-			stream.Read(chunk, 0, 4);
-			var pos = stream.Position;
-			//float myFloat = System.BitConverter.ToSingle(chunk, 0);
-			int myInt = System.BitConverter.ToInt32(chunk,0);
-			//string myStr = System.BitConverter.ToString(chunk, 0);
-			//Console.WriteLine(myStr);
-			//Console.ReadKey(true);
-			if (myInt==0x4E495254)
-			//if (myFloat >= 0.1 && myFloat <= 50) 
-			{
-				//Console.Write("0x{0:X8}: ",pos);
-				i++;
-				stream.Seek(-84, SeekOrigin.Current);
-				stream.Read(chunk, 0, 4);float myFloat = System.BitConverter.ToSingle(chunk, 0);
-				stream.Seek(-4, SeekOrigin.Current);
-				Console.Write("{0} \n",myFloat);
-				if (myFloat>0.1) stream.Write(System.BitConverter.GetBytes((float)1), 0, 4);
-				stream.Seek(pos,SeekOrigin.Begin);
-			}			
-			}
-			
-		}
-		
-		Console.WriteLine("wrote {0} values",i);
-		//Console.ReadKey(true);
-	}
-	
 	public static bool FileOp(string file)
 	{
 		byte a=0,b = 0;
@@ -62,11 +27,9 @@ class Test
 				var pos = stream.Position + sz;
 				stream.Read(chunk, 0, 4); var hz = BitConverter.ToInt32(chunk,0)+stream.Position;
 				stream.Read(chunk, 0, 4); sz = BitConverter.ToInt32(chunk,0);
-				//var b1 = new byte[sz]; stream.Read(b1, 0, sz);
 				stream.Seek(sz,SeekOrigin.Current);
 				stream.Seek(0x14,SeekOrigin.Current);
 				stream.Read(chunk, 0, 4); sz = BitConverter.ToInt32(chunk,0);
-				//if (sz==0xCC || sz==0xC4) 
 				if (sz==0x4E495254)
 				{
 					stream.Seek(pos-8,SeekOrigin.Begin);//Console.Write(" FLT: 0x{0:X8} ",stream.Position);
@@ -87,18 +50,14 @@ class Test
 						foreach ( var c in s1) {
 							stream.WriteByte((byte)c);
 						}
-						//stream.Write(BitConverter.GetBytes(s1,
 					} else {Console.Write(" not igc_! "); Console.ReadKey(true);}
 				}
 				
 				stream.Seek(pos,SeekOrigin.Begin);
-				//{Console.WriteLine(" not 0xCC (0xC4)"); return false;}
 			}
 		}
 		
-		Console.WriteLine("wrote {0} floats and {1} strings",a,b);
-		//Console.ReadKey(true);
-		//Console.Write('\n');
+		Console.WriteLine(" wrote {0} floats and {1} string",a,b);
 		return true;
 	}
 	

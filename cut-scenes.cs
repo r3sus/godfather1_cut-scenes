@@ -57,7 +57,8 @@ class Test
 			}
 		}
 		
-		Console.WriteLine(" wrote {0} floats and {1} string",a,b);
+		//Console.WriteLine(" wrote {0} floats and {1} string",a,b);
+		Console.WriteLine("{0} & {1}",a,b);
 		return true;
 	}
 	
@@ -77,12 +78,14 @@ class Test
 			else {Console.WriteLine("please input game folder (drag and drop)"); rootpath = Console.ReadLine(); continue;}			
         	}
         	Directory.SetCurrentDirectory(rootpath);
-        	Console.WriteLine("please input option:\n 1 - backup and cut scenes.\n 2 - restore (if you did 1).\n 3 - quick cut (if you did 1 and 2).\n x - exit");
+        	Console.WriteLine("please input option:"+"\n 1 - backup and cut scenes."+"\n 2 - restore backups (if available)."/*+"\n 3 - quick cut (if you did 1 and 2).\n x - exit"*/);
         	char v2;
         	while(true) {
         	v2 = Console.ReadKey(true).KeyChar;
-        	if ("123x".Contains(v2+"")) {Console.WriteLine("ok, {0}.",v2);break;}
+        	if ("12x".Contains(v2+"")) {Console.WriteLine("ok, {0}.",v2);break;}
         	}
+        	bool f = false;
+        	if (v2=='2') {Console.WriteLine("Keep backup files? y/n"); f = Console.ReadKey(true).KeyChar=='y';Console.WriteLine("ok");}
         	if (v2=='x') {Console.WriteLine("Bye.");Console.ReadKey();return;}
             string[] files = Directory.GetFiles(".", "igc_act*.str",SearchOption.AllDirectories);
             byte i =0;
@@ -95,11 +98,16 @@ class Test
                 {
 					if (File.Exists(file + ".bak")) File.Copy(file + ".bak", file, true);
 					else File.Copy(file, file + ".bak", false);		
-				FileOp(file);
-					File.Copy(file, file + ".cut", true);	
+					FileOp(file);
+					//File.Copy(file, file + ".cut", true);	
                 }
-                if (v2 == '2') if (File.Exists(file + ".bak")) File.Copy(file+ ".bak", file, true);
-                if (v2 == '3') if (File.Exists(file + ".cut")) File.Copy(file+ ".cut", file, true);
+                if (v2 == '2') 
+                {                	
+                	if (File.Exists(file + ".bak")) {File.Copy(file+ ".bak", file, true);
+                		if (!f) File.Delete(file + ".bak");
+                	}
+                }
+                //if (v2 == '3') if (File.Exists(file + ".cut")) File.Copy(file+ ".cut", file, true);
                 i++;
             }
             Console.WriteLine("The number of files is {0}.", i);

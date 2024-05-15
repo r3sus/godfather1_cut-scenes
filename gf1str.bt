@@ -1,0 +1,41 @@
+char sig[4];
+Assert(sig=="coTS");
+FSkip(4);
+int i1;
+if (i1 == 0x0302) 
+{
+FSeek(0x20);int p;
+FSeek(p+0x800);
+}
+else if (i1 == 0x0301) FSeek(0x800);
+else return;
+
+typedef struct {
+int nsz;
+char name[nsz];
+//char n0;
+//local int s = 4-FTell()%4;
+//if (s!=0) char n1[4-FTell()%4];
+//while(FTell()%4!=0) {Assert(ReadByte()==0xBF);}
+//FSeek((FTell()+1)%4 )
+} ST <read=Str(name)>;
+
+typedef struct {
+int sig;//char c[4];
+//Assert(sig==0x0716||sig==0x0722);
+//if (sig==0x0722) return;
+int sz;
+int sig1;
+Assert(sig1==0x1802FFFF);
+local int pos = FTell()+sz;
+int hsz;
+//int nsz;char name[nsz-4];
+ST name;
+int unk1[4];
+ST ftn;
+FSeek(pos);
+} RECORD <read=Str(ftn.name)>;
+//local int i;for( i = 0; i < 5; i++ )
+while(ReadInt(FTell())!=0x0722)
+RECORD test; 
+//RECORD test[70] <optimize=false>;

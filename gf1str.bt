@@ -11,31 +11,31 @@ else if (i1 == 0x0301) FSeek(0x800);
 else return;
 
 typedef struct {
-int nsz;
-char name[nsz];
-//char n0;
-//local int s = 4-FTell()%4;
-//if (s!=0) char n1[4-FTell()%4];
-//while(FTell()%4!=0) {Assert(ReadByte()==0xBF);}
-//FSeek((FTell()+1)%4 )
+int sz;
+char name[sz];
 } ST <read=Str(name)>;
 
 typedef struct {
-int sig;//char c[4];
-//Assert(sig==0x0716||sig==0x0722);
-//if (sig==0x0722) return;
-int sz;
-int sig1;
-Assert(sig1==0x1802FFFF);
-local int pos = FTell()+sz;
-int hsz;
-//int nsz;char name[nsz-4];
+int sig,sz,sig1,hsz;
+local int ft = FTell(), eof = ft + sz-4, eoh = ft + hsz;
 ST name;
-int unk1[4];
-ST ftn;
-FSeek(pos);
-} RECORD <read=Str(ftn.name)>;
-//local int i;for( i = 0; i < 5; i++ )
+FSkip(16);//int unk1[4];
+ST type;
+FSeek(eoh);
+if (name.sz==0x20)
+{
+FSkip(0x10);
+int ssz;
+FSkip(ssz-0x14);
+int fs;
+}
+//if (name.sz==0x18)
+if (type.name=="SMB")
+{
+FSkip(0x50);
+string exa;
+}
+FSeek(eof);
+} RECORD; 
 while(ReadInt(FTell())!=0x0722)
 RECORD test; 
-//RECORD test[70] <optimize=false>;
